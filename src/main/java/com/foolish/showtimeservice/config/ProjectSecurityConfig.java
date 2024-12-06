@@ -22,7 +22,8 @@ public class ProjectSecurityConfig {
     http
             .authorizeHttpRequests(config -> config
                     .requestMatchers(
-                            "/api/v1/showtimes/**", "/api/v1/showtimes").permitAll()
+                            "/api/v1/showtimes/**", "/api/v1/showtimes",
+                            "/api/v1/cinemas/**", "/api/v1/cinemas").permitAll()
                     .anyRequest().denyAll());
     return http.build();
   }

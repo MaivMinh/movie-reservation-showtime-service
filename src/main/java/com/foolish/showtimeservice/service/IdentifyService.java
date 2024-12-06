@@ -16,4 +16,9 @@ public class IdentifyService {
     String token = header.substring(7);
     return identifyServiceGrpcClient.doIdentify(token);
   }
+
+  public boolean isAdmin(HttpServletRequest request) {
+    IdentifyResponse iResponse = doIdentify(request);
+    return (iResponse != null && iResponse.getActive() && iResponse.getRoles().equals("ADMIN"));
+  }
 }
