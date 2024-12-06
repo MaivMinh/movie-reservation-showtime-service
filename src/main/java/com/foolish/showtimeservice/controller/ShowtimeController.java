@@ -38,13 +38,8 @@ import java.util.Map;
 @RequestMapping(value = "/api/v1/showtimes")
 public class ShowtimeController {
   private final ShowtimeService showtimeService;
-  private final ProvinceService provinceService;
-  private final CinemaService cinemaService;
-  private final CinemaMapper cinemaMapper;
   private final RoomService roomService;
-  private final RoomMapper roomMapper;
   private final ShowtimeMapper showtimeMapper;
-  private final SeatService seatService;
   private final IdentifyService identifyService;
   private final CheckMovieActiveStateServiceGrpcClient checkActiveServiceClient;
 
@@ -179,113 +174,4 @@ public class ShowtimeController {
     return ResponseEntity.ok(new ResponseData(HttpStatus.OK.value(), "Success", showtimeDTO));
   }
 
-
-
-  @Transactional
-  @PostMapping(value = "/rooms")
-  public ResponseEntity<ResponseData> createRoom(@RequestBody @NotNull RoomDTO dto) {
-    /*
-    request-body: {
-      name: String,
-      location: String,
-      cinema: {id: Integer}
-    }
-
-    response-data: {
-      name: String,
-      location: String,
-      cinema: CinemaDTO
-    }
-    */
-
-    Room room = new Room();
-    room.setName(dto.getName());
-    room.setLocation(dto.getLocation());
-    Cinema cinema = cinemaService.getCinemaByIdOrElseThrow(dto.getCinema().getId());
-    room.setCinema(cinema);
-    Room saved = roomService.save(room);
-    if (saved == null || saved.getId() <= 0) {
-      return ResponseEntity.ok(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Can't save room"));
-    }
-    dto = roomMapper.toDTO(saved);
-
-    return ResponseEntity.ok(new ResponseData(HttpStatus.OK.value(), "Success", dto));
-  }
-
-
-  // Phương thức update room.
-  @Transactional
-  @PatchMapping(value = "/rooms/{id}")
-  public ResponseEntity<ResponseData> updateRoom(@PathVariable Integer id, @RequestBody RoomDTO dto) {
-    Room room = roomService.getRoomById(id);
-    if (StringUtils.hasText(dto.getName())) {
-      room.setName(dto.getName());
-    }
-    if (StringUtils.hasText(dto.getLocation())) room.setLocation(dto.getLocation());
-    if (dto.getCinema() != null) {
-      room.setCinema(cinemaService.getCinemaByIdOrElseThrow(dto.getCinema().getId()));
-    }
-    Room saved = roomService.save(room);
-    if (saved == null || saved.getId() <= 0) {
-      return ResponseEntity.ok(new ResponseError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Can't save room"));
-    }
-    return ResponseEntity.ok(new ResponseData(HttpStatus.NO_CONTENT.value(), "Success", null));
-  }
-
-
-  @PostMapping(value = "/seats")
-  public ResponseEntity<ResponseData> createSeat(@RequestBody SeatDTO dto) {
-    Seat seat = new Seat();
-    seat.setType(dto.getType());
-    seat.setPrice(dto.getPrice());
-    seat.setSeatRow(dto.getSeatRow());
-    seat.setSeatNumber(dto.getSeatNumber());
-    seat.setStatus(dto.getStatus());
-    Room room = roomService.getRoomByIdOrElseThrow(dto.getRoomId());
-    seat.setRoom(room);
-    Seat saved = seatService.save(seat);
-    if (saved == null || saved.getId() <= 0) {
-      return ResponseEntity.ok(new ResponseError(HttpStatus.BAD_REQUEST.value(), "Can't save seat"));
-    }
-    dto.setId(saved.getId());
-    return ResponseEntity.ok(new ResponseData(HttpStatus.OK.value(), "Success", dto));
-  }
-
-  @Transactional
-  @PatchMapping(value = "/seats/{id}")
-  public ResponseEntity<ResponseData> updateSeat(@PathVariable Integer id, @RequestBody SeatDTO dto) {
-    Seat seat = seatService.getSeatByIdOrElseThrow(id);
-    if (StringUtils.hasText(dto.getType())) {
-      seat.setType(dto.getType());
-    }
-    if (dto.getPrice() != null) {
-      seat.setPrice(dto.getPrice());
-    }
-    if (StringUtils.hasText(dto.getSeatRow())) {
-      seat.setSeatRow(dto.getSeatRow());
-    }
-    if (dto.getSeatNumber() != null) {
-      seat.setSeatNumber(dto.getSeatNumber());
-    }
-    if (dto.getStatus() != null) {
-      seat.setStatus(dto.getStatus());
-    }
-    if (dto.getRoomId() != null) {
-      seat.setRoom(roomService.getRoomByIdOrElseThrow(dto.getRoomId()));
-    }
-    Seat saved = seatService.save(seat);
-    if (saved == null || saved.getId() <= 0) {
-      return ResponseEntity.ok(new ResponseError(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Can't save seat"));
-    }
-    return ResponseEntity.ok(new ResponseData(HttpStatus.NO_CONTENT.value(), "Success", null));
-  }
-
-
-  @Transactional
-  @DeleteMapping(value = "/seats/{id}")
-  public ResponseEntity<ResponseData> deleteSeat(@PathVariable Integer id) {
-    Seat seat = seatService.getSeatByIdOrElseThrow(id);
-    seatService.delete(seat);
-    return ResponseEntity.ok(new ResponseData(HttpStatus.NO_CONTENT.value(), "Success", null));
-  }
 }
