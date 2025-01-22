@@ -1,13 +1,7 @@
 package com.foolish.showtimeservice.controller;
 
-import com.foolish.showtimeservice.DTOs.CinemaDTO;
-import com.foolish.showtimeservice.DTOs.RoomDTO;
-import com.foolish.showtimeservice.DTOs.SeatDTO;
 import com.foolish.showtimeservice.DTOs.ShowtimeDTO;
-import com.foolish.showtimeservice.constants.ROLE;
 import com.foolish.showtimeservice.grpcClients.CheckMovieActiveStateServiceGrpcClient;
-import com.foolish.showtimeservice.mapper.CinemaMapper;
-import com.foolish.showtimeservice.mapper.RoomMapper;
 import com.foolish.showtimeservice.mapper.ShowtimeMapper;
 import com.foolish.showtimeservice.model.*;
 import com.foolish.showtimeservice.response.ResponseData;
@@ -17,7 +11,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import net.devh.boot.grpc.examples.lib.ActiveStateResponse;
-import net.devh.boot.grpc.examples.lib.IdentifyResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,7 +18,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;

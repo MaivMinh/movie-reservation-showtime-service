@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
+@RequestMapping("/api/v1/rooms")
 public class RoomController {
   private final IdentifyService identifyService;
   private final RoomService roomService;
@@ -32,7 +33,7 @@ public class RoomController {
 
 
   @Transactional
-  @PostMapping(value = "/rooms")
+  @PostMapping(value = "")
   public ResponseEntity<ResponseData> createRoom(@RequestBody @NotNull RoomDTO dto, HttpServletRequest request) {
     /*
     request-body: {
@@ -70,7 +71,7 @@ public class RoomController {
 
   // Phương thức update room.
   @Transactional
-  @PatchMapping(value = "/rooms/{id}")
+  @PatchMapping(value = "/{id}")
   public ResponseEntity<ResponseData> updateRoom(@PathVariable Integer id, @RequestBody RoomDTO dto, HttpServletRequest request) {
     if (!identifyService.isAdmin(request)) {
       return ResponseEntity.ok(new ResponseError(HttpStatus.FORBIDDEN.value(), "You don't have permission to update room"));
